@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, Music, ArrowLeft, Loader2 } from 'lucide-react';
+import { Search, Music, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 interface SearchResult {
@@ -35,15 +35,23 @@ export default function SearchPage() {
     setError(null);
     
     try {
+      console.log('Searching for:', searchTerm);
       const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
       const data = await response.json();
+      
+      console.log('Search response:', data);
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to search songs');
       }
       
       setResults(data.songs || []);
+      
+      if (data.songs && data.songs.length === 0) {
+        setError(`No results found for "${searchTerm}". Try different keywords or check spelling.`);
+      }
     } catch (err) {
+      console.error('Search error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred while searching');
       setResults([]);
     } finally {
@@ -111,7 +119,7 @@ export default function SearchPage() {
             Search results for "{query}"
           </h1>
           <p className="text-gray-400">
-            {isLoading ? 'Searching...' : `${results.length} results found`}
+            {isLoading ? 'Searching...' : error ? 'Search encountered an issue' : `${results.length} results found`}
           </p>
         </div>
 
@@ -120,41 +128,45 @@ export default function SearchPage() {
           <div className="flex items-center justify-center py-16">
             <div className="text-center space-y-4">
               <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mx-auto" />
-              <p className="text-gray-400">Taking a closer look at those lyrics...</p>
+              <p className="text-gray-400">Searching the music universe...</p>
             </div>
           </div>
         )}
 
         {/* Error state */}
-        {error && (
+        {error && !isLoading && (
           <div className="glass-card p-8 text-center">
             <div className="space-y-4">
               <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
-                <Search className="w-8 h-8 text-red-400" />
+                <AlertCircle className="w-8 h-8 text-red-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Search Error</h3>
+              <h3 className="text-xl font-semibold text-white">Search Issue</h3>
               <p className="text-gray-300 max-w-md mx-auto">{error}</p>
-              <button
-                onClick={() => searchSongs(query)}
-                className="accent-gradient text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200"
-              >
-                Try Again
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* No results */}
-        {!isLoading && !error && results.length === 0 && (
-          <div className="glass-card p-8 text-center">
-            <div className="space-y-4">
-              <div className="w-16 h-16 bg-gray-500/20 rounded-full flex items-center justify-center mx-auto">
-                <Search className="w-8 h-8 text-gray-400" />
+              <div className="space-y-2">
+                <button
+                  onClick={() => searchSongs(query)}
+                  className="accent-gradient text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 mr-4"
+                >
+                  Try Again
+                </button>
+                <div className="text-sm text-gray-400">
+                  <p>Try searching for:</p>
+                  <div className="flex flex-wrap gap-2 mt-2 justify-center">
+                    {['Bohemian Rhapsody Queen', 'Shape of You Ed Sheeran', 'Blinding Lights Weeknd'].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        onClick={() => {
+                          setSearchQuery(suggestion);
+                          router.push(`/search?q=${encodeURIComponent(suggestion)}`);
+                        }}
+                        className="bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-xs transition-colors"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-white">No Results Found</h3>
-              <p className="text-gray-300 max-w-md mx-auto">
-                Hmm, we couldn't find any songs matching "{query}". Try a different search term or check the spelling.
-              </p>
             </div>
           </div>
         )}

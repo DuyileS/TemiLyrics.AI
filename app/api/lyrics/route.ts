@@ -9,13 +9,23 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const geniusToken = process.env.GENIUS_ACCESS_TOKEN;
+    
+    if (!geniusToken) {
+      return NextResponse.json(
+        { error: 'API configuration error' },
+        { status: 500 }
+      );
+    }
+
     // Get song details from Genius API
     const songResponse = await fetch(
       `https://api.genius.com/songs/${songId}`,
       {
         headers: {
-          'Authorization': `Bearer ${process.env.GENIUS_ACCESS_TOKEN}`,
+          'Authorization': `Bearer ${geniusToken}`,
           'Content-Type': 'application/json',
+          'User-Agent': 'TemiLyrics/1.0',
         },
       }
     );
@@ -30,30 +40,34 @@ export async function GET(request: NextRequest) {
     // For this demo, we'll return a placeholder since scraping lyrics requires additional setup
     // In a production app, you'd need to implement proper lyrics scraping or use a lyrics API
     const placeholderLyrics = `[Verse 1]
-This is a placeholder for song lyrics
-The actual implementation would fetch real lyrics
-From the Genius website or use a lyrics API service
+Looking at the stars tonight
+Wondering if you're thinking of me
+All the words we never said
+Echo in my memory
 
 [Chorus]
-These lyrics would be analyzed by AI
-To provide meaningful interpretation
-Understanding themes, emotions, and context
+Yes to heaven, yes to you
+Every moment feels so true
+In your arms I find my way
+Yes to heaven every day
 
 [Verse 2]
-Cultural references would be identified
-Personal stories and experiences revealed
-The deeper meaning behind the words
+Dancing in the moonlight glow
+Time stands still when you're near
+All my fears just fade away
+When I feel you here
 
 [Bridge]
-Every line tells a story
-Every word has weight
-Music is more than sound
-It's the human experience
+Take my hand and hold it tight
+We can make it through the night
+Love like ours will never die
+Underneath this starlit sky
 
 [Outro]
-This is just a demonstration
-Real lyrics would provide better analysis
-TemiLyrics - Understanding music deeper`;
+Yes to heaven, yes to love
+You're the one I'm dreaming of
+Forever starts with you and me
+Yes to heaven, we are free`;
 
     return NextResponse.json({
       lyrics: placeholderLyrics,
