@@ -1,0 +1,124 @@
+'use client';
+
+import { useState } from 'react';
+import { Search, Music, ExternalLink } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+export default function Home() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    
+    setIsLoading(true);
+    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900" />
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-600/20 via-transparent to-transparent" />
+      
+      {/* Header */}
+      <header className="relative z-10 flex justify-between items-center p-6">
+        <div className="flex items-center space-x-2">
+          <Music className="w-8 h-8 text-cyan-400" />
+          <h1 className="text-2xl font-bold text-white">TemiLyrics</h1>
+        </div>
+        
+        <a 
+          href="https://bolt.new" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white hover:bg-white/20 transition-all duration-200"
+        >
+          <span>Built with Bolt.new</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
+      </header>
+
+      {/* Main content */}
+      <main className="relative z-10 flex flex-col items-center justify-center px-6 pt-20 pb-32">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          {/* Hero section */}
+          <div className="space-y-6">
+            <h2 className="text-5xl md:text-7xl font-bold leading-tight">
+              <span className="gradient-text">
+                Explore the heart and soul
+              </span>
+              <br />
+              <span className="text-white">
+                behind your favorite music
+              </span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Go beyond just listening – understand what your favorite songs are truly about with AI that breaks down the stories behind the music.
+            </p>
+          </div>
+
+          {/* Search section */}
+          <div className="max-w-2xl mx-auto space-y-4">
+            <form onSubmit={handleSearch} className="relative">
+              <div className="glass-card p-2">
+                <div className="flex items-center space-x-4">
+                  <Search className="w-6 h-6 text-gray-400 ml-4" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search for a song or artist..."
+                    className="flex-1 bg-transparent text-white placeholder-gray-400 text-lg focus:outline-none py-4"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={isLoading || !searchQuery.trim()}
+                    className="accent-gradient text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? 'Searching...' : 'Search'}
+                  </button>
+                </div>
+              </div>
+            </form>
+            
+            <p className="text-gray-400 text-sm">
+              Try: "23 Burna Boy" or "Yes to Heaven Lana Del Rey"
+            </p>
+          </div>
+
+          {/* Features preview */}
+          <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
+            <div className="glass-card p-6 text-center space-y-4">
+              <div className="w-12 h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
+                <Search className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Smart Search</h3>
+              <p className="text-gray-300">Find any song with intelligent search that understands context and variations.</p>
+            </div>
+            
+            <div className="glass-card p-6 text-center space-y-4">
+              <div className="w-12 h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
+                <Music className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Deep Analysis</h3>
+              <p className="text-gray-300">AI-powered interpretation revealing themes, cultural references, and hidden meanings.</p>
+            </div>
+            
+            <div className="glass-card p-6 text-center space-y-4">
+              <div className="w-12 h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
+                <ExternalLink className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">Context & Story</h3>
+              <p className="text-gray-300">Discover the real-life events and stories that inspired your favorite songs.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
