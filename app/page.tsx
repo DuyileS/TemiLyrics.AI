@@ -34,10 +34,11 @@ export default function Home() {
           href="https://bolt.new" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="hidden sm:flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white hover:bg-white/20 transition-all duration-200"
+          className="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm text-white hover:bg-white/20 transition-all duration-200"
         >
-          <span>Built with Bolt.new</span>
-          <ExternalLink className="w-4 h-4" />
+          <span className="hidden sm:inline">Built with Bolt.new</span>
+          <span className="sm:hidden">Bolt.new</span>
+          <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
         </a>
       </header>
 
