@@ -27,16 +27,16 @@ export default function Home() {
       <header className="relative z-10 flex justify-between items-center p-6">
         <div className="flex items-center space-x-2">
           <Music className="w-8 h-8 text-cyan-400" />
-          <h1 className="text-2xl font-bold text-white">TemiLyrics</h1>
+          <h1 className="text-2xl font-bold">TemiLyrics</h1>
         </div>
         
         <a 
           href="https://bolt.new" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 text-sm text-white hover:bg-white/20 transition-all duration-200"
+          className="flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-rounded border-white/20 rounded-full px-4 py-2 text-sm text-white hover:bg-white/20 transition-all duration-200"
         >
-          <span>Built with Bolt.new</span>
+          <span className="text-white text-base">Built with Bolt.new</span>
           <ExternalLink className="w-4 h-4" />
         </a>
       </header>
@@ -46,7 +46,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center space-y-8">
           {/* Hero section */}
           <div className="space-y-6">
-            <h2 className="text-5xl md:text-7xl font-bold leading-tight">
+            <h2 className="text-3xl md:text-7xl font-bold leading-tight">
               <span className="gradient-text">
                 Explore the heart and soul
               </span>
