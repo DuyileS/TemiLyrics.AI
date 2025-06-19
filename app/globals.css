@@ -50,7 +50,7 @@
   /* Better text readability on mobile */
   @media (max-width: 640px) {
     .glass-card {
-      @apply bg-white/8 backdrop-blur-sm;
+      @apply bg-white bg-opacity-8 backdrop-blur-sm;
     }
     
     h1, h2, h3 {
