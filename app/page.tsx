@@ -47,41 +47,42 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
           {/* Hero section */}
           <div className="space-y-4 sm:space-y-6">
-            <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight">
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight px-2">
               <span className="gradient-text">
                 Explore the heart and soul
               </span>
-              <br />
+              <br className="hidden sm:block" />
+              <span className="block sm:hidden h-2"></span>
               <span className="text-white pt-1">
                 behind your favorite music
               </span>
             </h2>
             
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-2">
+            <p className="text-base sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-4 sm:px-2">
               Go beyond just listening – understand what your favorite songs are truly about with AI that breaks down the stories behind the music.
             </p>
           </div>
 
           {/* Search section */}
-          <div className="max-w-2xl mx-auto space-y-4 px-2">
+          <div className="max-w-2xl mx-auto space-y-4 px-4 sm:px-2">
             <form onSubmit={handleSearch} className="relative">
               <div className="glass-card p-2">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                  <div className="flex items-center space-x-3 flex-1">
-                    <Search className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 ml-3 sm:ml-4" />
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                  <div className="flex items-center space-x-3 flex-1 min-h-[48px] sm:min-h-[56px]">
+                    <Search className="w-5 h-5 sm:w-6 sm:h-6 text-gray-400 ml-4 sm:ml-4 flex-shrink-0" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search for a song or artist..."
-                      className="flex-1 bg-transparent text-white placeholder-gray-400 text-base sm:text-lg focus:outline-none py-3 sm:py-4 pr-3"
+                      className="flex-1 bg-transparent text-white placeholder-gray-400 text-base sm:text-lg focus:outline-none py-3 sm:py-4 pr-4"
                       disabled={isLoading}
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isLoading || !searchQuery.trim()}
-                    className="accent-gradient text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                    className="accent-gradient text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto min-h-[48px] sm:min-h-[56px]"
                   >
                     {isLoading ? 'Searching...' : 'Search'}
                   </button>
@@ -89,35 +90,35 @@ export default function Home() {
               </div>
             </form>
             
-            <p className="text-gray-400 text-sm px-2">
+            <p className="text-gray-400 text-sm px-4 sm:px-2 text-center">
               Try: "23 Burna Boy" or "Yes to Heaven Lana Del Rey"
             </p>
           </div>
 
           {/* Features preview */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-12 sm:mt-16 max-w-4xl mx-auto px-2">
-            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-12 sm:mt-16 max-w-4xl mx-auto px-4 sm:px-2">
+            <div className="glass-card p-5 sm:p-6 text-center space-y-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
                 <Search className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white">Smart Search</h3>
-              <p className="text-sm sm:text-base text-gray-300">Find any song with intelligent search that understands context and variations.</p>
+              <h3 className="text-base sm:text-xl font-semibold text-white">Smart Search</h3>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed">Find any song with intelligent search that understands context and variations.</p>
             </div>
             
-            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4">
+            <div className="glass-card p-5 sm:p-6 text-center space-y-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
                 <Music className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white">Deep Analysis</h3>
-              <p className="text-sm sm:text-base text-gray-300">AI-powered interpretation revealing themes, cultural references, and hidden meanings.</p>
+              <h3 className="text-base sm:text-xl font-semibold text-white">Deep Analysis</h3>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed">AI-powered interpretation revealing themes, cultural references, and hidden meanings.</p>
             </div>
             
-            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4 sm:col-span-2 md:col-span-1">
+            <div className="glass-card p-5 sm:p-6 text-center space-y-4 sm:col-span-2 md:col-span-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
                 <ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white">Context & Story</h3>
-              <p className="text-sm sm:text-base text-gray-300">Discover the real-life events and stories that inspired your favorite songs.</p>
+              <h3 className="text-base sm:text-xl font-semibold text-white">Context & Story</h3>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed">Discover the real-life events and stories that inspired your favorite songs.</p>
             </div>
           </div>
         </div>

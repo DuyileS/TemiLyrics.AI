@@ -35,37 +35,50 @@
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  /* Improved mobile touch targets */
-  @media (max-width: 640px) {
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    body {
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .glass-card {
+      @apply bg-white/8 backdrop-blur-sm;
+    }
+    
+    /* Better touch targets */
     button, a {
       min-height: 44px;
       min-width: 44px;
     }
     
+    /* Prevent zoom on input focus */
     input {
-      font-size: 16px; /* Prevents zoom on iOS */
-    }
-  }
-
-  /* Better text readability on mobile */
-  @media (max-width: 640px) {
-    .glass-card {
-      @apply bg-white/10 backdrop-blur-sm;
+      font-size: 16px;
     }
     
-    h1, h2, h3 {
+    /* Improved typography spacing */
+    h1 {
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    
+    h2 {
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    
+    h3 {
       line-height: 1.2;
     }
     
     p {
-      line-height: 1.5;
+      line-height: 1.6;
     }
-  }
-
-  /* Improved scrolling on mobile */
-  @media (max-width: 640px) {
-    body {
-      -webkit-overflow-scrolling: touch;
+    
+    /* Better spacing for gradient text */
+    .gradient-text {
+      word-spacing: 0.1em;
+      letter-spacing: -0.01em;
     }
   }
 }
