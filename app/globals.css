@@ -42,7 +42,7 @@
     }
     
     .glass-card {
-      @apply bg-white/8 backdrop-blur-sm;
+      @apply bg-white/10 backdrop-blur-sm;
     }
     
     /* Better touch targets */
