@@ -1,9 +1,11 @@
+// File: app/api/interpret/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const { lyrics, title, artist } = await request.json();
-    
+
     if (!lyrics || !title || !artist) {
       return NextResponse.json(
         { error: 'Lyrics, title, and artist are required' },
@@ -11,58 +13,131 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // For this demo, we'll return a detailed mock interpretation
-    // In production, you would integrate with Claude Sonnet 4 API
-    const mockInterpretation = {
-      theme: "Personal growth, resilience, and finding strength through adversity",
-      tone: "Introspective yet empowering, with undertones of determination and hope",
-      summary: "This song explores the journey of overcoming challenges and finding inner strength. The artist reflects on past struggles while looking forward with renewed confidence and purpose. The lyrics suggest themes of personal transformation, the importance of staying true to oneself, and the power of perseverance in the face of obstacles.",
-      line_analysis: [
-        {
-          line: "This is a placeholder for song lyrics",
-          meaning: "This opening line sets the tone for self-reflection and acknowledgment of the artist's journey. It suggests an honest, raw approach to storytelling."
-        },
-        {
-          line: "These lyrics would be analyzed by AI",
-          meaning: "This meta-reference highlights the intersection of technology and art, suggesting themes of modernity and the evolution of how we understand music."
-        },
-        {
-          line: "Every line tells a story",
-          meaning: "This powerful statement emphasizes the weight and significance of each word in the song, suggesting that nothing is superficial or throwaway."
-        },
-        {
-          line: "Music is more than sound",
-          meaning: "A profound observation about the deeper meaning of music as a vessel for human experience, emotion, and connection beyond mere auditory pleasure."
-        }
-      ],
-      cultural_references: [
-        "References to modern technology and AI suggest commentary on our digital age",
-        "The emphasis on storytelling connects to oral tradition and cultural narrative",
-        "Themes of resilience echo universal human experiences across cultures",
-        "The bridge between sound and meaning reflects philosophical discussions about art's purpose"
-      ],
-      related_events: [
-        {
-          event_type: "Personal Growth Journey",
-          possible_event_context: "The artist may have experienced significant personal challenges or a period of self-discovery that influenced this introspective approach to music.",
-          lyric_evidence: "Every word has weight",
-          interpretation: "This suggests the artist has learned to value authenticity and meaningful expression, possibly after a period of feeling unheard or misunderstood."
-        },
-        {
-          event_type: "Career Reflection",
-          possible_event_context: "This could relate to the artist's evolution in their music career, moving from surface-level content to deeper, more meaningful artistic expression.",
-          lyric_evidence: "Understanding music deeper",
-          interpretation: "Indicates a maturation in the artist's approach to their craft, possibly after receiving feedback about wanting more substance in their work."
-        }
-      ],
-      external_context: {
-        source: "Demo Interview (Placeholder)",
-        quote: "I wanted to create something that would make people think deeper about what music means to them, not just as entertainment but as a reflection of our shared human experience.",
-        relevance_to_lyrics: "This quote, if real, would perfectly align with the song's central theme of music being 'more than sound' and the emphasis on deeper meaning and understanding. It would confirm the artist's intentional approach to creating meaningful content."
-      }
-    };
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    if (!GROQ_API_KEY) {
+      return NextResponse.json(
+        { error: 'Groq API key not configured in .env' },
+        { status: 500 }
+      );
+    }
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    if (!GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: 'Gemini API key not configured in .env' },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({ interpretation: mockInterpretation });
+    const systemPrompt = `
+You are a deeply insightful music analyst and cultural observer. 
+You will receive a song's lyrics along with the title and artist. 
+You are given the full lyrics of a song. Your task is to interpret the song with empathy, creativity, and deep understanding.  
+Provide the line-by-line analysis by aggregation. Do not make the summary for each song short, let it have good amount of content that really inspires the user
+
+ Your output should include:
+ 1. Theme  
+ 2. Tone  
+ 3. Overall Summary  
+ 4. Line-by-Line Analysis  
+ 5. Cultural or Spiritual References  
+ 6. Related Life Events from the artist’s real experiences:
+    - childbirth, relationships, loss, salvation, awards, disses, violence, reconciliation  
+ 7. External Context:
+    - If the artist, their team, or collaborators have spoken about the song in interviews, press releases, tweets, podcasts, etc., include that quote and explain how it adds depth to the interpretation. Give credible source for it as well, do not generate false information
+    - If no external context is known, say so.
+For each event detected, explain:
+- What event it likely relates to
+- Why you think the lyrics point to that
+- How it deepens the interpretation
+
+Analyze the lyrics and respond in **strict JSON only**. Do not add markdown, commentary, explanations, or text before or after the JSON.
+
+
+Structure your output like this:
+{
+  "theme": "...",
+  "tone": "...",
+  "summary": "...",
+  "line_analysis": [{ "line": "...", "meaning": "..." }],
+  "cultural_references": ["..."],
+  "related_events": [
+    {
+      "event_type": "...",
+      "possible_event_context": "...",
+      "lyric_evidence": "...",
+      "interpretation": "..."
+    }
+  ],
+  "external_context": {
+    "source": "...",
+    "quote": "...",
+    "relevance_to_lyrics": "..."
+  }
+}
+`;
+
+    const llamaResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: systemPrompt },
+          {
+            role: "user",
+            content: `Title: ${title}\nArtist: ${artist}\nLyrics:\n"""${lyrics.replace(/"/g, '\\"')}"""\n\nRespond only in JSON format.`
+          }
+        ],
+        temperature: 0.7
+      })
+    });
+
+    const result = await llamaResponse.json();
+    const interpretationText =
+      result?.choices?.[0]?.message?.content?.trim() ?? null;
+
+    if (!interpretationText) {
+      return NextResponse.json(
+        { error: 'Model did not return any response' },
+        { status: 502 }
+      );
+    }
+
+    // Try strict JSON parse
+    let parsedInterpretation;
+    try {
+      parsedInterpretation = JSON.parse(interpretationText);
+    } catch (e) {
+      // Try extracting JSON from mixed response
+      const jsonMatch = interpretationText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsedInterpretation = JSON.parse(jsonMatch[0]);
+        } catch (e) {
+          return NextResponse.json(
+            {
+              error: 'Failed to parse extracted JSON.',
+              raw: jsonMatch[0]
+            },
+            { status: 500 }
+          );
+        }
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Interpretation was not returned in valid JSON format.',
+            raw: interpretationText
+          },
+          { status: 500 }
+        );
+      }
+    }
+
+    return NextResponse.json({ interpretation: parsedInterpretation });
+
   } catch (error) {
     console.error('Interpret API error:', error);
     return NextResponse.json(

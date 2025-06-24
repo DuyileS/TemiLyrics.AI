@@ -41,11 +41,14 @@ export default function SongPage() {
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
 
-  useEffect(() => {
-    if (songId) {
-      loadSongInterpretation();
-    }
-  }, [songId]);
+useEffect(() => {
+  if (songId && title && artist && !interpretation && !error) {
+    loadSongInterpretation();
+  }
+}, [songId, title, artist, interpretation, error]);
+// ✅ Only run when inputs are available
+
+
 
   const loadSongInterpretation = async () => {
     setIsLoading(true);
@@ -53,8 +56,9 @@ export default function SongPage() {
     
     try {
       // First get lyrics
-      const lyricsResponse = await fetch(`/api/lyrics?id=${songId}`);
+      const lyricsResponse = await fetch(`/api/lyrics?title=${title}&artist=${artist}`);
       const lyricsData = await lyricsResponse.json();
+      console.log("lyrically", lyricsData);
       
       if (!lyricsResponse.ok) {
         throw new Error(lyricsData.error || 'Failed to fetch lyrics');
@@ -68,12 +72,18 @@ export default function SongPage() {
         },
         body: JSON.stringify({
           lyrics: lyricsData.lyrics,
-          title,
-          artist,
+          title: title,
+          artist: artist ,
         }),
       });
+
+      console.log(interpretResponse);
+      
       
       const interpretData = await interpretResponse.json();
+
+      console.log("interprete Data", interpretData);
+      
       
       if (!interpretResponse.ok) {
         throw new Error(interpretData.error || 'Failed to interpret lyrics');
@@ -190,7 +200,7 @@ export default function SongPage() {
             {/* Line Analysis */}
             {interpretation.line_analysis && interpretation.line_analysis.length > 0 && (
               <div className="glass-card p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Line-by-Line Analysis</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Lyrical Analysis</h3>
                 <div className="space-y-3 sm:space-y-4">
                   {interpretation.line_analysis.map((analysis, index) => (
                     <div key={index} className="border-l-2 border-cyan-400/50 pl-3 sm:pl-4 py-2">

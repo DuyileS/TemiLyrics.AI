@@ -52,7 +52,7 @@ export default function Home() {
                 Explore the heart and soul
               </span>
               <br />
-              <span className="text-white pt-1">
+              <span className="text-white pt-1 px-0.5 mt-2 block">
                 behind your favorite music
               </span>
             </h2>
