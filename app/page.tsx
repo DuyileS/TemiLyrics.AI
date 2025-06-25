@@ -90,7 +90,7 @@ export default function Home() {
             </form>
             
             <p className="text-gray-400 text-sm px-2">
-              Try: "23 Burna Boy" or "Yes to Heaven Lana Del Rey"
+              Try: "Love Yourself Justin Bieber" or "Yes to Heaven Lana Del Rey"
             </p>
           </div>
 
