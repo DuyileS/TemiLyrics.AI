@@ -18,6 +18,17 @@
     background-attachment: fixed;
     font-family: 'Jost', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cyan-900/50 rounded-full hover:bg-cyan-700/50 transition-colors;
+  }
   
   .gradient-text {
     @apply bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent;
@@ -28,7 +39,7 @@
   }
   
   .glass-card {
-    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl;
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl transition-all duration-300;
   }
   
   .loading-pulse {

@@ -10,32 +10,37 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Step 1: Fetch lyrics from lyrics.ovh
-    const response = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`);
+    // const response = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`);
+    const response = await fetch(`https://lrclib.net/api/get?artist_name=${encodeURIComponent(artist)}&track_name=${encodeURIComponent(title)}`);
 
     if (!response.ok) {
-      return NextResponse.json({ error: 'Lyrics not found or failed to fetch' }, { status: 404 });
+      const errorText = await response.text();
+      console.error('Fetch error:', response.status, response.statusText, errorText);
+      return NextResponse.json({ error: 'Lyrics not found or failed to fetch', details: errorText }, { status: 404 });
     }
 
     const data = await response.json();
-    const lyrics = data?.lyrics?.trim();
-    //console.log("Lyrics", lyrics);
-    
+    // const lyrics = data?.lyrics?.trim();
+    const lyrics = data?.plainLyrics?.trim();
+    console.log("Lyrics from LRCLIB", lyrics);
 
     if (!lyrics) {
-      return NextResponse.json({ error: 'No lyrics returned from lyrics.ovh' }, { status: 404 });
+      return NextResponse.json({ error: 'No lyrics returned' }, { status: 404 });
     }
 
     return NextResponse.json({
       lyrics,
       title,
       artist,
-      source: 'lyrics.ovh',
+      // source: 'lyrics.ovh',
+      source: 'lrclib.net',
     });
   } catch (error) {
-    console.error('Lyrics.ovh API error:', error);
+    // console.error('Lyrics.ovh API error:', error);
+    console.error('LRCLIB API error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch lyrics from lyrics.ovh' },
+      // { error: 'Failed to fetch lyrics from lyrics.ovh' },
+      { error: 'Failed to fetch lyrics from LRCLIB' },
       { status: 500 }
     );
   }

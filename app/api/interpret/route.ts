@@ -1,5 +1,3 @@
-// File: app/api/interpret/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -20,13 +18,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-    if (!GEMINI_API_KEY) {
-      return NextResponse.json(
-        { error: 'Gemini API key not configured in .env' },
-        { status: 500 }
-      );
-    }
+
 
     const systemPrompt = `
 You are a deeply insightful music analyst and cultural observer. 
@@ -88,7 +80,7 @@ Structure your output like this:
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
         messages: [
           { role: "system", content: systemPrompt },
           {
@@ -101,6 +93,7 @@ Structure your output like this:
     });
 
     const result = await llamaResponse.json();
+    console.log("Model response:", result);
     const interpretationText =
       result?.choices?.[0]?.message?.content?.trim() ?? null;
 
@@ -111,12 +104,10 @@ Structure your output like this:
       );
     }
 
-    // Try strict JSON parse
     let parsedInterpretation;
     try {
       parsedInterpretation = JSON.parse(interpretationText);
     } catch (e) {
-      // Try extracting JSON from mixed response
       const jsonMatch = interpretationText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         try {

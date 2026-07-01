@@ -31,40 +31,39 @@ export default function SongPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   const songId = params.id as string;
   const title = searchParams.get('title') || '';
   const artist = searchParams.get('artist') || '';
-  
+
   const [interpretation, setInterpretation] = useState<LyricsInterpretation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
 
-useEffect(() => {
-  if (songId && title && artist && !interpretation && !error) {
-    loadSongInterpretation();
-  }
-}, [songId, title, artist, interpretation, error]);
-// ✅ Only run when inputs are available
+  useEffect(() => {
+    if (songId && title && artist && !interpretation && !error) {
+      loadSongInterpretation();
+    }
+  }, [songId, title, artist, interpretation, error]);
+
 
 
 
   const loadSongInterpretation = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
-      // First get lyrics
+
       const lyricsResponse = await fetch(`/api/lyrics?title=${title}&artist=${artist}`);
       const lyricsData = await lyricsResponse.json();
-      console.log("lyrically", lyricsData);
-      
+
       if (!lyricsResponse.ok) {
         throw new Error(lyricsData.error || 'Failed to fetch lyrics');
       }
-      
-      // Then get interpretation
+
+
       const interpretResponse = await fetch('/api/interpret', {
         method: 'POST',
         headers: {
@@ -73,22 +72,22 @@ useEffect(() => {
         body: JSON.stringify({
           lyrics: lyricsData.lyrics,
           title: title,
-          artist: artist ,
+          artist: artist,
         }),
       });
 
       console.log(interpretResponse);
-      
-      
+
+
       const interpretData = await interpretResponse.json();
 
       console.log("interprete Data", interpretData);
-      
-      
+
+
       if (!interpretResponse.ok) {
         throw new Error(interpretData.error || 'Failed to interpret lyrics');
       }
-      
+
       setInterpretation(interpretData.interpretation);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -99,12 +98,12 @@ useEffect(() => {
 
   const handleFeedback = (type: 'up' | 'down') => {
     setFeedback(type);
-    // In a real app, you'd send this feedback to your analytics service
+
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900">
-      {/* Header */}
+
       <header className="border-b border-white/10 bg-black/20 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center space-x-3 sm:space-x-4">
@@ -115,8 +114,8 @@ useEffect(() => {
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="text-sm sm:text-base">Back</span>
             </button>
-            
-            <Link 
+
+            <Link
               href="/"
               className="flex items-center space-x-2 text-white hover:text-cyan-400 transition-colors"
             >
@@ -127,9 +126,9 @@ useEffect(() => {
         </div>
       </header>
 
-      {/* Main content */}
+
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Song header */}
+
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
             Meaning of <span className="gradient-text">{title}</span>
@@ -144,17 +143,27 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Loading state */}
+
         {isLoading && (
-          <div className="flex items-center justify-center py-12 sm:py-16">
-            <div className="text-center space-y-4">
-              <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 animate-spin mx-auto" />
-              <p className="text-gray-400 text-sm sm:text-base">Connecting the dots in the music...</p>
+          <div className="space-y-6 sm:space-y-8 animate-pulse mt-8">
+            <div className="glass-card p-4 sm:p-6 space-y-6">
+              <div className="h-6 bg-white/10 rounded-md w-1/4"></div>
+              <div className="h-4 bg-white/5 rounded-md w-3/4"></div>
+              <div className="h-4 bg-white/5 rounded-md w-full"></div>
+              <div className="h-4 bg-white/5 rounded-md w-5/6"></div>
+            </div>
+            <div className="glass-card p-4 sm:p-6 space-y-4">
+              <div className="h-6 bg-white/10 rounded-md w-1/3 mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-20 bg-white/5 rounded-lg w-full"></div>
+                <div className="h-20 bg-white/5 rounded-lg w-full"></div>
+                <div className="h-20 bg-white/5 rounded-lg w-full"></div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Error state */}
+
         {error && (
           <div className="glass-card p-6 sm:p-8 text-center">
             <div className="space-y-4">
@@ -175,37 +184,37 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Interpretation content */}
+
         {!isLoading && !error && interpretation && (
           <div className="space-y-6 sm:space-y-8">
             {/* Overview */}
-            <div className="glass-card p-4 sm:p-6 space-y-4 sm:space-y-6">
+            <div className="glass-card p-4 sm:p-6 space-y-4 sm:space-y-6 hover:-translate-y-1 hover:scale-[1.01] transition-transform duration-300">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <h3 className="text-base sm:text-lg font-semibold text-cyan-400 mb-2">Theme</h3>
-                  <p className="text-gray-300 text-sm sm:text-base">{interpretation.theme}</p>
+                  <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-2">Theme</h3>
+                  <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{interpretation.theme}</p>
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-semibold text-cyan-400 mb-2">Tone</h3>
-                  <p className="text-gray-300 text-sm sm:text-base">{interpretation.tone}</p>
+                  <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-2">Tone</h3>
+                  <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{interpretation.tone}</p>
                 </div>
               </div>
-              
+
               <div>
-                <h3 className="text-base sm:text-lg font-semibold text-cyan-400 mb-2">Summary</h3>
-                <p className="text-gray-300 leading-relaxed text-sm sm:text-base">{interpretation.summary}</p>
+                <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-2">Overall Summary</h3>
+                <p className="text-gray-300 leading-8 text-sm sm:text-base">{interpretation.summary}</p>
               </div>
             </div>
 
             {/* Line Analysis */}
             {interpretation.line_analysis && interpretation.line_analysis.length > 0 && (
-              <div className="glass-card p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Lyrical Analysis</h3>
-                <div className="space-y-3 sm:space-y-4">
+              <div className="glass-card p-4 sm:p-6 hover:-translate-y-1 hover:scale-[1.01] transition-transform duration-300">
+                <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-4 sm:mb-6">Lyrical Analysis</h3>
+                <div className="space-y-4 sm:space-y-6">
                   {interpretation.line_analysis.map((analysis, index) => (
-                    <div key={index} className="border-l-2 border-cyan-400/50 pl-3 sm:pl-4 py-2">
-                      <p className="text-cyan-400 font-medium mb-1 text-sm sm:text-base">"{analysis.line}"</p>
-                      <p className="text-gray-300 text-sm sm:text-base">{analysis.meaning}</p>
+                    <div key={index} className="border-l-2 border-cyan-400/50 pl-4 sm:pl-5 py-1">
+                      <p className="text-cyan-400 font-medium mb-2 text-sm sm:text-base italic">"{analysis.line}"</p>
+                      <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{analysis.meaning}</p>
                     </div>
                   ))}
                 </div>
@@ -214,12 +223,12 @@ useEffect(() => {
 
             {/* Cultural References */}
             {interpretation.cultural_references && interpretation.cultural_references.length > 0 && (
-              <div className="glass-card p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Cultural & Spiritual References</h3>
+              <div className="glass-card p-4 sm:p-6 hover:-translate-y-1 hover:scale-[1.01] transition-transform duration-300">
+                <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-4 sm:mb-6">Cultural & Spiritual References</h3>
                 <div className="grid gap-2 sm:gap-3">
                   {interpretation.cultural_references.map((reference, index) => (
-                    <div key={index} className="bg-cyan-400/10 rounded-lg p-3">
-                      <p className="text-gray-300 text-sm sm:text-base">{reference}</p>
+                    <div key={index} className="bg-cyan-400/10 rounded-lg p-4">
+                      <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{reference}</p>
                     </div>
                   ))}
                 </div>
@@ -228,18 +237,18 @@ useEffect(() => {
 
             {/* Related Events */}
             {interpretation.related_events && interpretation.related_events.length > 0 && (
-              <div className="glass-card p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">Related Life Events</h3>
-                <div className="space-y-3 sm:space-y-4">
+              <div className="glass-card p-4 sm:p-6 hover:-translate-y-1 hover:scale-[1.01] transition-transform duration-300">
+                <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-4 sm:mb-6">Related Life Events</h3>
+                <div className="space-y-4 sm:space-y-6">
                   {interpretation.related_events.map((event, index) => (
-                    <div key={index} className="border border-white/10 rounded-lg p-3 sm:p-4">
-                      <h4 className="text-base sm:text-lg font-medium text-cyan-400 mb-2">{event.event_type}</h4>
-                      <p className="text-gray-300 mb-2 text-sm sm:text-base">{event.possible_event_context}</p>
-                      <div className="bg-white/5 rounded p-2 sm:p-3 mb-2">
-                        <p className="text-xs sm:text-sm text-gray-400 mb-1">Lyric Evidence:</p>
-                        <p className="text-cyan-300 text-sm sm:text-base">"{event.lyric_evidence}"</p>
+                    <div key={index} className="border border-white/10 rounded-lg p-4 sm:p-5 bg-white/5">
+                      <h4 className="text-base sm:text-lg font-medium text-cyan-400 mb-3">{event.event_type}</h4>
+                      <p className="text-gray-300 mb-3 text-sm sm:text-base leading-relaxed">{event.possible_event_context}</p>
+                      <div className="bg-black/20 rounded-md p-3 sm:p-4 mb-3 border border-white/5">
+                        <p className="uppercase tracking-wider text-xs text-gray-500 mb-2">Lyric Evidence</p>
+                        <p className="text-cyan-300 text-sm sm:text-base italic">"{event.lyric_evidence}"</p>
                       </div>
-                      <p className="text-gray-300 text-sm sm:text-base">{event.interpretation}</p>
+                      <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{event.interpretation}</p>
                     </div>
                   ))}
                 </div>
@@ -248,16 +257,16 @@ useEffect(() => {
 
             {/* External Context */}
             {interpretation.external_context && interpretation.external_context.source && (
-              <div className="glass-card p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">External Context</h3>
-                <div className="space-y-3">
+              <div className="glass-card p-4 sm:p-6 hover:-translate-y-1 hover:scale-[1.01] transition-transform duration-300">
+                <h3 className="uppercase tracking-widest text-xs font-semibold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-teal-200 mb-4 sm:mb-6">External Context</h3>
+                <div className="space-y-4">
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-400 mb-1">Source: {interpretation.external_context.source}</p>
-                    <blockquote className="border-l-2 border-cyan-400/50 pl-3 sm:pl-4 py-2 bg-white/5 rounded-r">
+                    <p className="uppercase tracking-wider text-xs text-gray-400 mb-2">Source: {interpretation.external_context.source}</p>
+                    <blockquote className="border-l-2 border-cyan-400/50 pl-4 sm:pl-5 py-2 bg-white/5 rounded-r">
                       <p className="text-cyan-300 italic text-sm sm:text-base">"{interpretation.external_context.quote}"</p>
                     </blockquote>
                   </div>
-                  <p className="text-gray-300 text-sm sm:text-base">{interpretation.external_context.relevance_to_lyrics}</p>
+                  <p className="text-gray-300 text-sm sm:text-base leading-relaxed">{interpretation.external_context.relevance_to_lyrics}</p>
                 </div>
               </div>
             )}
@@ -268,26 +277,24 @@ useEffect(() => {
                 <p className="text-gray-400 text-xs sm:text-sm">
                   <span className="text-cyan-400">✨ Crafted by AI with care</span> - Interpretations are generated by advanced AI and may not reflect the artist's intended meaning.
                 </p>
-                
+
                 <div className="flex items-center space-x-2">
                   <span className="text-gray-400 text-xs sm:text-sm">Helpful?</span>
                   <button
                     onClick={() => handleFeedback('up')}
-                    className={`p-2 rounded-lg transition-colors ${
-                      feedback === 'up' 
-                        ? 'bg-green-500/20 text-green-400' 
-                        : 'hover:bg-white/10 text-gray-400'
-                    }`}
+                    className={`p-2 rounded-lg transition-colors ${feedback === 'up'
+                      ? 'bg-green-500/20 text-green-400'
+                      : 'hover:bg-white/10 text-gray-400'
+                      }`}
                   >
                     <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                   <button
                     onClick={() => handleFeedback('down')}
-                    className={`p-2 rounded-lg transition-colors ${
-                      feedback === 'down' 
-                        ? 'bg-red-500/20 text-red-400' 
-                        : 'hover:bg-white/10 text-gray-400'
-                    }`}
+                    className={`p-2 rounded-lg transition-colors ${feedback === 'down'
+                      ? 'bg-red-500/20 text-red-400'
+                      : 'hover:bg-white/10 text-gray-400'
+                      }`}
                   >
                     <ThumbsDown className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>

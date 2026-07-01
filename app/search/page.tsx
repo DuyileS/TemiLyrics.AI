@@ -18,7 +18,7 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get('q') || '';
-  
+
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,20 +33,20 @@ export default function SearchPage() {
   const searchSongs = async (searchTerm: string) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       console.log('Searching for:', searchTerm);
       const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
       const data = await response.json();
-      
+
       console.log('Search response:', data);
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to search songs');
       }
-      
+
       setResults(data.songs || []);
-      
+
       if (data.songs && data.songs.length === 0) {
         setError(`No results found for "${searchTerm}". Try different keywords or check spelling.`);
       }
@@ -72,12 +72,12 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900">
-      {/* Header */}
+
       <header className="border-b border-white/10 bg-black/20 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-4">
-              <Link 
+              <Link
                 href="/"
                 className="flex items-center space-x-2 text-white hover:text-cyan-400 transition-colors"
               >
@@ -86,7 +86,7 @@ export default function SearchPage() {
                 <span className="text-lg sm:text-xl font-bold">TemiLyrics</span>
               </Link>
             </div>
-            
+
             {/* Search bar */}
             <form onSubmit={handleSearch} className="flex-1 w-full sm:max-w-2xl sm:mx-8">
               <div className="glass-card p-2">
@@ -98,12 +98,12 @@ export default function SearchPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search for a song or artist..."
-                      className="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none py-2 text-sm sm:text-base"
+                      className="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 rounded py-2 px-2 text-sm sm:text-base transition-shadow"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="accent-gradient text-white px-4 sm:px-6 py-2 rounded-lg font-medium hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 text-sm sm:text-base"
+                    className="accent-gradient text-white px-4 sm:px-6 py-2 rounded font-medium hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all duration-300 text-sm sm:text-base"
                   >
                     Search
                   </button>
@@ -180,13 +180,13 @@ export default function SearchPage() {
               <div
                 key={song.id}
                 onClick={() => handleSongClick(song)}
-                className="glass-card p-4 sm:p-6 hover:bg-white/10 cursor-pointer transition-all duration-200 group"
+                className="glass-card p-4 sm:p-6 hover:bg-white/10 cursor-pointer hover:-translate-y-1 hover:scale-[1.01] transition-all duration-200 group"
               >
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-lg flex items-center justify-center flex-shrink-0 group-hover:shadow-lg group-hover:shadow-cyan-500/25 transition-all duration-200">
                     <Music className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base sm:text-lg font-semibold text-white truncate group-hover:text-cyan-400 transition-colors">
                       {song.title}
@@ -195,7 +195,7 @@ export default function SearchPage() {
                       by {song.artist}
                     </p>
                   </div>
-                  
+
                   <div className="text-gray-500 group-hover:text-cyan-400 transition-colors">
                     <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />
                   </div>

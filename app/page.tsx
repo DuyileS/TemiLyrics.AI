@@ -12,7 +12,7 @@ export default function Home() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    
+
     setIsLoading(true);
     router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
   };
@@ -22,7 +22,7 @@ export default function Home() {
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900" />
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-600/20 via-transparent to-transparent" />
-      
+
       {/* Header */}
       <header className="relative z-10 flex justify-between items-center p-4 sm:p-6">
         <div className="flex items-center space-x-2">
@@ -45,7 +45,7 @@ export default function Home() {
                 behind your favorite music
               </span>
             </h2>
-            
+
             <p className="text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-2">
               Go beyond just listening – understand what your favorite songs are truly about with AI that breaks down the stories behind the music.
             </p>
@@ -63,21 +63,21 @@ export default function Home() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search for a song or artist..."
-                      className="flex-1 bg-transparent text-white placeholder-gray-400 text-base sm:text-lg focus:outline-none py-3 sm:py-4 pr-3"
+                      className="flex-1 bg-transparent text-white placeholder-gray-400 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/50 rounded py-3 sm:py-4 px-3 transition-shadow"
                       disabled={isLoading}
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isLoading || !searchQuery.trim()}
-                    className="accent-gradient text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                    className="accent-gradient text-white px-6 sm:px-8 py-3 sm:py-4 rounded font-semibold hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                   >
                     {isLoading ? 'Searching...' : 'Search'}
                   </button>
                 </div>
               </div>
             </form>
-            
+
             <p className="text-gray-400 text-sm px-2">
               Try: &quot;Love Yourself Justin Bieber&quot; or &quot;Yes to Heaven Lana Del Rey&quot;
             </p>
@@ -85,23 +85,23 @@ export default function Home() {
 
           {/* Features preview */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-12 sm:mt-16 max-w-4xl mx-auto px-2">
-            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4">
+            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4 hover:-translate-y-1 hover:scale-[1.02]">
               <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
                 <Search className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold text-white">Smart Search</h3>
               <p className="text-sm sm:text-base text-gray-300">Find any song with intelligent search that understands context and variations.</p>
             </div>
-            
-            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4">
+
+            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4 hover:-translate-y-1 hover:scale-[1.02]">
               <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
                 <Music className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold text-white">Deep Analysis</h3>
               <p className="text-sm sm:text-base text-gray-300">AI-powered interpretation revealing themes, cultural references, and hidden meanings.</p>
             </div>
-            
-            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4 sm:col-span-2 md:col-span-1">
+
+            <div className="glass-card p-4 sm:p-6 text-center space-y-3 sm:space-y-4 sm:col-span-2 md:col-span-1 hover:-translate-y-1 hover:scale-[1.02]">
               <div className="w-10 h-10 sm:w-12 sm:h-12 accent-gradient rounded-full flex items-center justify-center mx-auto">
                 <ExternalLink className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
